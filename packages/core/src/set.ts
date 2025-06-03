@@ -4,7 +4,7 @@
  * @property {"added" | "removed" | "unchanged"} type - The type of change.
  * @property {T} value - The value that was added, removed, or unchanged.
  */
-export type SetDiffEntry<T> = { type: "added" | "removed" | "unchanged", value: T };
+export type SetDiffEntry<T> = { type: "added" | "removed" | "unchanged"; value: T };
 
 /**
  * Computes the difference between two sets.
@@ -22,13 +22,13 @@ export type SetDiffEntry<T> = { type: "added" | "removed" | "unchanged", value: 
  * // => [{type: "removed", value: 1}, {type: "added", value: 4}]
  */
 export function diffSets<T>(oldSet: Set<T>, newSet: Set<T>, showUnchanged = false): SetDiffEntry<T>[] {
-  const result: SetDiffEntry<T>[] = [];
-  for (const value of oldSet) {
-    if (!newSet.has(value)) result.push({ type: "removed", value });
-    else if (showUnchanged) result.push({ type: "unchanged", value });
-  }
-  for (const value of newSet) {
-    if (!oldSet.has(value)) result.push({ type: "added", value });
-  }
-  return result;
-} 
+    const result: SetDiffEntry<T>[] = [];
+    for (const value of oldSet) {
+        if (!newSet.has(value)) result.push({ type: "removed", value });
+        else if (showUnchanged) result.push({ type: "unchanged", value });
+    }
+    for (const value of newSet) {
+        if (!oldSet.has(value)) result.push({ type: "added", value });
+    }
+    return result;
+}

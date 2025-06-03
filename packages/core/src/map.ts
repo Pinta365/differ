@@ -9,10 +9,10 @@
  * @property {V} [newValue] - The new value for modified entries.
  */
 export type MapDiffEntry<K, V> =
-  | { type: "added", key: K, value: V }
-  | { type: "removed", key: K, value: V }
-  | { type: "modified", key: K, oldValue: V, newValue: V }
-  | { type: "unchanged", key: K, value: V };
+    | { type: "added"; key: K; value: V }
+    | { type: "removed"; key: K; value: V }
+    | { type: "modified"; key: K; oldValue: V; newValue: V }
+    | { type: "unchanged"; key: K; value: V };
 
 /**
  * Computes the difference between two maps.
@@ -32,22 +32,22 @@ export type MapDiffEntry<K, V> =
  * // => [{type: 'removed', key: 'x', value: 1}, {type: 'added', key: 'z', value: 3}, {type: 'unchanged', key: 'y', value: 2}]
  */
 export function diffMaps<K, V>(
-  oldMap: Map<K, V>,
-  newMap: Map<K, V>,
-  showUnchanged = false,
-  compareFn: (a: V, b: V) => boolean = (a, b) => a === b
+    oldMap: Map<K, V>,
+    newMap: Map<K, V>,
+    showUnchanged = false,
+    compareFn: (a: V, b: V) => boolean = (a, b) => a === b,
 ): MapDiffEntry<K, V>[] {
-  const result: MapDiffEntry<K, V>[] = [];
-  for (const [key, oldValue] of oldMap) {
-    if (!newMap.has(key)) result.push({ type: "removed", key, value: oldValue });
-    else {
-      const newValue = newMap.get(key)!;
-      if (!compareFn(oldValue, newValue)) result.push({ type: "modified", key, oldValue, newValue });
-      else if (showUnchanged) result.push({ type: "unchanged", key, value: oldValue });
+    const result: MapDiffEntry<K, V>[] = [];
+    for (const [key, oldValue] of oldMap) {
+        if (!newMap.has(key)) result.push({ type: "removed", key, value: oldValue });
+        else {
+            const newValue = newMap.get(key)!;
+            if (!compareFn(oldValue, newValue)) result.push({ type: "modified", key, oldValue, newValue });
+            else if (showUnchanged) result.push({ type: "unchanged", key, value: oldValue });
+        }
     }
-  }
-  for (const [key, newValue] of newMap) {
-    if (!oldMap.has(key)) result.push({ type: "added", key, value: newValue });
-  }
-  return result;
-} 
+    for (const [key, newValue] of newMap) {
+        if (!oldMap.has(key)) result.push({ type: "added", key, value: newValue });
+    }
+    return result;
+}
