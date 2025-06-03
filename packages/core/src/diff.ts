@@ -65,3 +65,53 @@ export function sequentialDiff<T>(left: T[], right: T[], options: DiffOptions = 
 
     return result.reverse();
 }
+
+/**
+ * Computes a character-level diff between two strings.
+ * Returns an array of diff segments with type: 'same', 'add', or 'delete'.
+ *
+ * @param left The original string.
+ * @param right The new string.
+ * @returns Array of diff segments.
+ */
+export function characterDiff(left: string, right: string): DiffEntry<string>[] {
+    const leftArr = left.split("");
+    const rightArr = right.split("");
+    const dp = lcs(leftArr, rightArr);
+    let leftIndex = leftArr.length;
+    let rightIndex = rightArr.length;
+    const result: DiffEntry<string>[] = [];
+    let buffer = "";
+    let lastType: "same" | "add" | "delete" | null = null;
+
+    function flushBuffer(type: "same" | "add" | "delete") {
+        if (buffer.length > 0 && lastType) {
+            result.push({ type: lastType, content: buffer });
+            buffer = "";
+        }
+        lastType = type;
+    }
+
+    while (leftIndex > 0 || rightIndex > 0) {
+        const equal = leftIndex > 0 && rightIndex > 0 && leftArr[leftIndex - 1] === rightArr[rightIndex - 1];
+        if (leftIndex > 0 && rightIndex > 0 && equal) {
+            if (lastType !== "same") flushBuffer("same");
+            buffer = leftArr[leftIndex - 1] + buffer;
+            leftIndex--;
+            rightIndex--;
+            lastType = "same";
+        } else if (rightIndex > 0 && (leftIndex === 0 || dp[leftIndex][rightIndex - 1] >= dp[leftIndex - 1][rightIndex])) {
+            if (lastType !== "add") flushBuffer("add");
+            buffer = rightArr[rightIndex - 1] + buffer;
+            rightIndex--;
+            lastType = "add";
+        } else if (leftIndex > 0) {
+            if (lastType !== "delete") flushBuffer("delete");
+            buffer = leftArr[leftIndex - 1] + buffer;
+            leftIndex--;
+            lastType = "delete";
+        }
+    }
+    flushBuffer(lastType as any);
+    return result.reverse();
+}
