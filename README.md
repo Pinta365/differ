@@ -10,8 +10,8 @@ it focuses on text and code diffing, with plans to expand to other formats in th
 
 ### Workspace members
 
-- **[@differ/core](/packages/core/README.md)** - Shared and low-level diff functions
-- **[@differ/code](/packages/code/README.md)** - Code diffing and formatting
+- **[@differ/core](https://jsr.io/@differ/core)** - Shared and low-level diff functions
+- **[@differ/code](https://jsr.io/@differ/code)** - Code diffing and formatting
 
 ## Contributing
 
