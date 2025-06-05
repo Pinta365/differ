@@ -11,12 +11,9 @@ Deno.test("diffCode - basic code diff", () => {
 
     const result = diffCode(oldCode, newCode);
 
-    // Check that the result contains the content
     assertEquals(result.includes('console.log("Hello")'), true);
     assertEquals(result.includes('console.log("Hello World")'), true);
-    // Check that it has proper line numbers
     assertEquals(result.includes("2 "), true);
-    // Check that it has proper prefixes
     assertEquals(result.includes("- "), true);
     assertEquals(result.includes("+ "), true);
 });
@@ -68,4 +65,21 @@ Deno.test("diffCode - JSON formatting", () => {
     assertEquals(parsed.diff[3].content, "}");
     assertEquals(parsed.diff[3].lineNumbers.old, 3);
     assertEquals(parsed.diff[3].lineNumbers.new, 3);
+});
+
+Deno.test("diffCode - throws on unknown format", () => {
+    const oldCode = `a`;
+    const newCode = `b`;
+    let threw = false;
+    try {
+        diffCode(oldCode, newCode, "invalid-format" as any);
+    } catch (e) {
+        threw = true;
+        if (!(e instanceof Error) || !e.message.includes("Unknown format")) {
+            throw new Error("Unexpected error thrown");
+        }
+    }
+    if (!threw) {
+        throw new Error("Expected diffCode to throw on unknown format");
+    }
 });
